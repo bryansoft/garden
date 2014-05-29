@@ -1,0 +1,24 @@
+{
+  "name": "garden.node",
+  "version": "0.0.0",
+  "description": "Node Boilerplate Version 2 ========================== *Requires Node v0.6.6 (or newer)* node-boilerplate takes html-boilerplate, express, connect, jade and Socket.IO and organizes them into a ready to use website project. It's a fast way to get working on your Node website without having to worry about the setup. It takes care of all the boring parts, like setting up your views, 404 page, 500 page, getting the modules organized, etc...",
+  "main": "main.js",
+  "dependencies": {
+    "connect": "~1.8.5",
+    "express": "~2.5.2",
+    "jade": "~0.20.0",
+    "should": "~3.3.2",
+    "socket.io": "~0.8.7",
+    "vows": "~0.5.13",
+    "serialport": "~1.4.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.20.0",
+    "serialport": "^1.4.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC"
+}
