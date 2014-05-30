@@ -1,6 +1,21 @@
 extends layout
 
+block head
+    script(data-main="js/main", src="js/components/requirejs/require.js")
+
+
+s
 block content
-	div
-		a(id='sender')='Send a Message'
-		ul(id='receiver')
+    div(data-bind="temperature:data", style="height:300px;width:600px")
+    div(data-bind="click:function(){creatingNote(!creatingNote())}")='Add Note'
+
+    div(data-bind="if:creatingNote")
+        span='New Note'
+        input(data-bind="value:currentText, valueChange:'keyup'")
+        div(data-bind="click:saveNew.bind($data)")="Save"
+
+    ul(data-bind="foreach:notes")
+        li
+            span(data-bind="text:uuid")
+            span(data-bind="text:note")
+            span(data-bind="text:time")

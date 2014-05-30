@@ -1,10 +1,11 @@
 //setup Dependencies
 var connect = require('connect')
-    , express = require('express')
-    , port = (process.env.PORT || 8081);
+  , express = require('express')
+  , _ = require("underscore")
+  , port = (process.env.PORT || 8081);
 
 var pg = require('pg');
-var conString = process.env.DATABASE_URL || 'postgres://localhost:5432/dailyjs'
+var conString = process.env.DATABASE_URL || 'postgres://postgres:test@localhost:5432/garden'
 
 
 
@@ -16,6 +17,17 @@ pg.connect(conString, function(err, client, done) {
                 'node varchar(60),' +
                 'time integer,' +
                 'temperature real)',
+    [], function(err, result) {
+      //call `done()` to release the client back to the pool
+      done();
+      if(err) {
+        return console.error('error running query', err);
+      }
+  });
+  client.query('create table if not exists note (' +
+    'uuid text unique, ' +
+    'writing text,' +
+    'time integer)',
     [], function(err, result) {
       //call `done()` to release the client back to the pool
       done();
@@ -99,6 +111,59 @@ server.post("/rest/measurement", function(req,res){
     });
   });
 })
+
+server.post("/rest/note", function(req,res){
+  pg.connect(conString, function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query('insert into note(uuid, writing, time) values ($1, $2, $3)',
+      [req.body.uuid, req.body.note, Math.round(req.body.time/1000)], function(err, result) {
+        done();
+        res.end();
+        if(err) {
+          return console.error('error running query', err);
+        }
+      });
+  });
+})
+server.get("/rest/note", function(req,res){
+  pg.connect(conString, function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query('select * from note',[], function(err, result) {
+      res.end(JSON.stringify(_.map(result.rows, function(r){
+        return {
+          uuid: r.uuid,
+          note: r.writing,
+          time: r.time
+        };
+      })));
+      done();
+      if(err) {
+        return console.error('error running query', err);
+      }
+    });
+  });
+})
+
+server.get("/rest/measurement", function(req,res){
+  pg.connect(conString, function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query('select * from measurement where temperature < 150',[], function(err, result) {
+      console.log(JSON.stringify(result.rows))
+        res.end(JSON.stringify(result.rows));
+        done();
+        if(err) {
+          return console.error('error running query', err);
+        }
+      });
+  });
+})
+
 
 
 //The 404 Route (ALWAYS Keep this as the last route)
