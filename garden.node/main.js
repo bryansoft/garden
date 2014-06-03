@@ -11,28 +11,38 @@ var node = process.argv[4];
 var serial = process.argv[5];
 var camera = process.argv[5];
 
-console.log("SERVER = " + server);
-console.log("PORT = " + port);
-console.log("NODE = " + node);
-console.log("SERIAL = " + serial);
-console.log("CAMERA = " + camera);
 
-function takePicture(){
-  fs.exists("image.bmp", function(exists){
-    exists ? fs.unlink("image.jpeg", doPic) : doPic();
-    function doPic(){
-      var child = exec('streamer -f jpeg -o image.jpeg -c ' + camera);
-      child.stdout.pipe(process.stdout)
-      child.on('exit', function() {
-        fs.rename("image.jpeg", new Date().getTime() + ".png", function(){
-          setTimeout(takePicture, 15 * 60 * 1000);
-        })
-      });
-    }
-  })
-}
+fs.readFile(process.argv[2], 'utf8', function (err,data) {
+  if (err) {
+    return console.log(err);
+  }
+  var config = JSON.parse(data);
 
-takePicture();
+  console.log("SERVER = " + config.server);
+  console.log("PORT = " + config.port);
+  console.log("NODE = " + config.node);
+  console.log("SERIAL = " + config.serial);
+  console.log("CAMERA = " + config.camera);
+
+  function takePicture(){
+    fs.exists("image.jpeg", function(exists){
+      exists ? fs.unlink("image.jpeg", doPic) : doPic();
+      function doPic(){
+        console.log("Taking picture...")
+        var child = exec('streamer -f jpeg -o image.jpeg -c ' + config.camera);
+        child.stdout.pipe(process.stdout)
+        child.on('exit', function() {
+          console.log("Picture call complete. Saving off picture")
+          fs.rename("image.jpeg", new Date().getTime() + ".png", function(){
+            setTimeout(takePicture, 15 * 60 * 1000);
+          })
+        });
+      }
+    })
+  }
+
+  takePicture();
+  });
 
 
 //var fs = require('fs');
