@@ -5,12 +5,6 @@ var http = require('http');
 var fs = require('fs');
 var exec = require('child_process').exec;
 
-var server = process.argv[2];
-var port = process.argv[3];
-var node = process.argv[4];
-var serial = process.argv[5];
-var camera = process.argv[5];
-
 process.on('uncaughtException', function(e){
   console.error("uncaught: " + e);
   if(e.toString().indexOf("Disconnected") >= 0 || e.toString().indexOf("Opening ") >= 0){
@@ -54,8 +48,8 @@ fs.readFile(process.argv[2], 'utf8', function (err,data) {
   var reconnect = null;
 
   function connect(){
-    console.log("Opening serial port on " + serial);
-    sp = new SerialPort(serial, {
+    console.log("Opening serial port on " + config.serial);
+    sp = new SerialPort(config.serial, {
       baudrate: 9600,
       parser: serialport.parsers.readline("\n")
     });
@@ -80,15 +74,15 @@ fs.readFile(process.argv[2], 'utf8', function (err,data) {
       console.log("Parsing json...")
       var json = JSON.parse(data);
       console.log("Parsed!");
-      json.node = node;
+      json.node = config.node;
       try{
         // Build the post string from an object
         var post_data = querystring.stringify(json);
 
         // An object of options to indicate where to post to
         var post_options = {
-          host: server,
-          port: port,
+          host: config.server,
+          port: config.port,
           path: '/rest/measurement',
           method: 'POST',
           headers: {
