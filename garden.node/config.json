@@ -3,5 +3,9 @@
   "port" : 80,
   "node" : "alpha",
   "serial" : "COM1",
-  "camera" : "/test"
+  "camera" : "/test",
+
+  "s3": {
+
+  }
 }
