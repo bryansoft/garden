@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "mocha": "*",
+    "moment": "^2.6.0",
     "should": "*",
     "underscore": "^1.6.0",
     "vows": "0.5.x"

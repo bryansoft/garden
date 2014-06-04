@@ -6,16 +6,48 @@ require.config({
     "flot": "components/flot/jquery.flot",
     "flot.time": "components/flot/jquery.flot.time",
     "underscore": "components/underscore/underscore",
+    "fullcalendar": "components/fullcalendar/dist/fullcalendar",
+    "moment": "components/moment/moment",
     "highcharts" : "lib/highcharts"
+  },
+  shim:{
+    "jquery":{exports:"$"},
+    "fullcalendar": {
+      deps:["jquery", "moment"]
+    }
   }
 });
 
 require([
   "jquery",
   "knockout",
-  "binding/temperature.binding"
+  "underscore",
+  "binding/temperature.binding",
+  "fullcalendar"
 ],
-function($, ko){
+function($, ko, _){
+
+  ko.bindingHandlers.calendar = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+      valueAccessor().subscribe(function(data){
+        $(element).fullCalendar({
+          header: {
+            left: 'prev,next today',
+            center: 'title'
+          },
+          editable: true,
+          events: _.map(data, function(d){
+            return {
+              title: d.note,
+              start: d.time * 1000
+            }
+          })
+        });
+      })
+    },
+    update: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+    }
+  };
 
   var serialize = function(obj) {
     var str = [];

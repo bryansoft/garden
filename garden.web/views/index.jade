@@ -2,20 +2,25 @@ extends layout
 
 block head
     script(data-main="js/main", src="js/components/requirejs/require.js")
+    link(rel="stylesheet", href="js/components/fullcalendar/dist/fullcalendar.css")
 
 
-s
+
 block content
-    div(data-bind="temperature:data", style="height:300px;width:600px")
+    //div(data-bind="temperature:data", style="height:300px;width:600px")
     div(data-bind="click:function(){creatingNote(!creatingNote())}")='Add Note'
+
+
+    div(class="calendar", data-bind="calendar: notes", style="height:300px;margin-left:300px")
 
     div(data-bind="if:creatingNote")
         span='New Note'
         input(data-bind="value:currentText, valueChange:'keyup'")
-        div(data-bind="click:saveNew.bind($data)")="Save"
+        div(data-bind="click:saveNew.bind($data)")="Same"
 
-    ul(data-bind="foreach:notes")
-        li
-            span(data-bind="text:uuid")
-            span(data-bind="text:note")
-            span(data-bind="text:time")
+    div(class="note-list")
+        ul(data-bind="foreach:notes")
+            li
+                span(data-bind="text:uuid")
+                span(data-bind="text:note")
+                span(data-bind="text:time")

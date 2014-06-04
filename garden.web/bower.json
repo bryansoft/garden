@@ -20,6 +20,8 @@
     "requirejs": "~2.1.13",
     "jquery": "~2.1.1",
     "flot": "~0.8.3",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "moment": "~2.6.0",
+    "fullcalendar": "~2.0.0"
   }
 }

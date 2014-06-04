@@ -30,11 +30,11 @@ fs.readFile(process.argv[2], 'utf8', function (err,data) {
       exists ? fs.unlink("image.jpeg", doPic) : doPic();
       function doPic(){
         console.log("Taking picture...")
-        var child = exec('streamer -f jpeg -o image.jpeg -c ' + config.camera);
+        var child = exec('streamer -f jpeg -o image.jpeg -s 2048x1536 -c ' + config.camera);
         child.stdout.pipe(process.stdout)
         child.on('exit', function() {
           console.log("Picture call complete. Saving off picture")
-          fs.rename("image.jpeg", new Date().getTime() + ".png", function(){
+          fs.rename("image.jpeg", new Date().getTime() + ".jpeg", function(){
             setTimeout(takePicture, 15 * 60 * 1000);
           })
         });
