@@ -4,6 +4,7 @@ var querystring = require('querystring');
 var http = require('http');
 var fs = require('fs');
 var exec = require('child_process').exec;
+var restler = require("restler");
 
 process.on('uncaughtException', function(e){
   console.error("uncaught: " + e);
