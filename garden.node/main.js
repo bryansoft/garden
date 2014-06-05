@@ -33,13 +33,33 @@ fs.readFile(process.argv[2], 'utf8', function (err,data) {
         var child = exec('streamer -f jpeg -o image.jpeg -s 2048x1536 -c ' + config.camera);
         child.stdout.pipe(process.stdout)
         child.on('exit', function() {
-          console.log("Picture call complete. Saving off picture")
-          fs.rename("image.jpeg", new Date().getTime() + ".jpeg", function(){
-            setTimeout(takePicture, 15 * 60 * 1000);
-          })
+          console.log("Picture call complete. Sending picture to server...");
+          fs.stat("image.jpeg", function(err, stats) {
+            if(err){
+              return setTimeout(takePicture, 15 * 60 * 1000);
+            }
+            restler.post("http://" + config.server + ":" + config.port + "/rest/snapshot", {
+              multipart: true,
+              data: {
+                "uuid": "test1",
+                "time": 1000,
+                "image": restler.file("image.jpeg", null, stats.size, null, "image/jpg")
+              }
+            })
+            .on("error", scheduleNextPicture)
+            .on("complete", function(data) {
+              console.log("File uploaded. Local file...");
+              fs.unlink("image.jpeg", scheduleNextPicture);
+              console.log(data);
+            });
+          });
         });
       }
     })
+  }
+
+  function scheduleNextPicture(){
+    setTimeout(takePicture, 15 * 60 * 1000);
   }
 
   takePicture();

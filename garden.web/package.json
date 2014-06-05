@@ -9,8 +9,10 @@
     "jade": "0.20.0"
   },
   "devDependencies": {
+    "aws-sdk": "^2.0.0-rc.19",
     "mocha": "*",
     "moment": "^2.6.0",
+    "restler": "^3.2.2",
     "should": "*",
     "underscore": "^1.6.0",
     "vows": "0.5.x"
