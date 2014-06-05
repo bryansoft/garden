@@ -14,6 +14,14 @@ process.on('uncaughtException', function(e){
 })
 
 
+function uuid(){
+  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
+}
+
+
 fs.readFile(process.argv[2], 'utf8', function (err,data) {
   if (err) {
     return console.log(err);
@@ -34,16 +42,20 @@ fs.readFile(process.argv[2], 'utf8', function (err,data) {
         var child = exec('streamer -f jpeg -o image.jpeg -s 2048x1536 -c ' + config.camera);
         child.stdout.pipe(process.stdout)
         child.on('exit', function() {
-          console.log("Picture call complete. Sending picture to server...");
           fs.stat("image.jpeg", function(err, stats) {
             if(err){
               return setTimeout(takePicture, 15 * 60 * 1000);
             }
+            var id = uuid();
+            var time = new Date().getTime();
+            console.log("Picture call complete. Sending picture to server...");
+            console.log("Image label = " + id)
+            console.log("Time = " + new Date(time));
             restler.post("http://" + config.server + ":" + config.port + "/rest/snapshot", {
               multipart: true,
               data: {
-                "uuid": "test1",
-                "time": 1000,
+                "uuid": id,
+                "time": time,
                 "image": restler.file("image.jpeg", null, stats.size, null, "image/jpg")
               }
             })
