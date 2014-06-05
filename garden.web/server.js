@@ -185,7 +185,7 @@ server.post("/rest/snapshot", function(req, res){
   console.log("GOT HERE?")
   pg.connect(conString, function(err, client, done) {
     client.query('insert into snapshot(uuid, time) values ($1, $2)',
-      [req.body.uuid, req.body.time/1000], function(err) {
+      [req.body.uuid, Math.round(req.body.time/1000)], function(err) {
         if(err) {
           return console.error('error running query', err);
         }
