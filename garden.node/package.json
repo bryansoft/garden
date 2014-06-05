@@ -7,17 +7,14 @@
     "connect": "~1.8.5",
     "express": "~2.5.2",
     "jade": "~0.20.0",
+    "restler": "^3.2.2",
+    "serialport": "~1.4.0",
     "should": "~3.3.2",
     "socket.io": "~0.8.7",
-    "vows": "~0.5.13",
-    "serialport": "~1.4.0"
+    "vows": "~0.5.13"
   },
   "devDependencies": {
-    "camelot": "0.0.4",
-    "imagesnap": "0.0.0",
-    "mocha": "~1.20.0",
-    "restler": "^3.2.2",
-    "serialport": "^1.4.0"
+    "mocha": "~1.20.0"
   },
   "scripts": {
     "test": "mocha"
