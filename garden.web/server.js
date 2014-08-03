@@ -168,7 +168,6 @@ server.get("/rest/measurement", function(req,res){
       return console.error('error fetching client from pool', err);
     }
     client.query('select * from measurement where temperature < 150',[], function(err, result) {
-      console.log(JSON.stringify(result.rows))
         res.end(JSON.stringify(result.rows));
         done();
         if(err) {

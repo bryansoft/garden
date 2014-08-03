@@ -1,0 +1,10 @@
+{
+  "name": "garden.sensor",
+  "version": "0.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "serialport": "~1.4.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
