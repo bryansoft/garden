@@ -46,7 +46,7 @@ db.save('_design/measurements', {
 module.exports = {
   latestMeasurements: function(callback){
     log.info("Querying measurements");
-    db.view("measurements/sorted", {limit:10, descending:true}, function(err, results){
+    db.view("measurements/sorted", {limit:1000, descending:true}, function(err, results){
       if(err){
         log.info("Failed to fetch latest measurements: " + JSON.stringify(err));
       }
