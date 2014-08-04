@@ -61,7 +61,9 @@ module.exports = {
       if(err){
         log.info("Failed to fetch latest measurements by key: " + endKey + " : " + JSON.stringify(err));
       }
-      callback(err, results);
+      callback(err, _.collect(results, function(r){
+        return r.value;
+      }))
     });
   },
   saveMeasurement: function(report, callback){

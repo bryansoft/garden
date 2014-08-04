@@ -1,28 +1,5 @@
 
 
-.calendar{
-    margin-left:300px;
-}
-
-.note-list{
-    width:300px;
-    position:absolute;
-    left:0;
-    top:0;
-    bottom:0;
-}
-
-.note-list ul{
-    height:100%;
-    margin-top:100px;
-}
-
-ul{
-    list-style-type: none;
-    padding:0;
-}
-
-.note-list li{
-    border-radius: 5px;
-    border: 1px solid #999;
+.chart{
+    height:200px;
 }
