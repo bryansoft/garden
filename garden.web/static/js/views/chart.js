@@ -37,7 +37,8 @@ define(function(require){
             xAxis: {
               type: 'datetime',
               max: (_.max(data, function(d){return d.x}).x),
-              min: (_.min(data, function(d){return d.x}).x - 1 * 60 *60 * 1000)
+              min: (_.max(data, function(d){return d.x}).x - 24 * 60 *60 * 1000),
+              minRange:60 * 1000
             },
             yAxis: {
               title: {
