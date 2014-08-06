@@ -115,6 +115,7 @@ module.exports = {
   latestMeasurementsByHour: function(callback){
     log.info("Querying measurements by endkey");
     db.view("measurements/byHour", {group:true}, function(err, results){
+      log.info("Results came back...")
       if(err){
         log.info("Failed to fetch latest measurements by key: " + JSON.stringify(err));
       }
