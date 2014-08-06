@@ -47,4 +47,21 @@ module.exports = function(server){
     })
   })
 
+  server.get("/rest/snapshot", function(req, res){
+    var log = logger.create("GET-SNAPSHOT");
+    var uuid = req.param("id");
+    log.info("Fetching snapshot: " + uuid)
+
+    db.getSnapshots(function(err, docs){
+      if(err){
+        log.info("Failed to load snapshots for reason: " + err);
+        res.write('404 Not Found\n');
+        res.end();
+        return;
+      }
+      res.send(docs);
+    })
+  })
+
+
 }

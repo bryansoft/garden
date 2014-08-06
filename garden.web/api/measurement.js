@@ -26,6 +26,14 @@ module.exports = function(server){
       res.send(measurements);
     });
   })
+  server.get("/rest/measurement/byHour", function(req,res){
+    var log = logger.create("GET-MEASUREMENT-LATEST-BYHOUR")
+    log.info("Querying the latest measurements")
+    db.latestMeasurementsByHour(function(err, measurements){
+      log.info("Queried measurements");
+      res.send(measurements);
+    });
+  })
   server.get("/rest/measurement/latest/:endKey", function(req,res){
     var log = logger.create("GET-MEASUREMENT-LATEST")
     var endKey = req.param("endKey");

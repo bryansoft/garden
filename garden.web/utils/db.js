@@ -39,6 +39,52 @@ db.save('_design/measurements', {
           emit(doc.time, doc)
         }
       }
+    },
+    byHour: {
+      // map
+      map: function(doc){
+        emit(Math.round(parseFloat(doc.time)/60 * 60 * 1000), parseFloat(doc.moisture)) // in place of doc.info.size, you'd put whatever
+        // value you want averaged here
+      },
+      // reduce
+      reduce: function(keys, values, rereduce) {
+        if (!rereduce){
+          var length = values.length
+          return [sum(values) / length, length]
+        }else{
+          var length = sum(values.map(function(v){return v[1]}))
+          var avg = sum(values.map(function(v){
+            return v[0] * (v[1] / length)
+          }))
+          return [avg, length]
+        }
+      }
+//      map: function (doc) {
+//        if (doc.type === 'measurement') {
+//          emit(Math.floor(doc.time/1000), parseFloat(doc.moisture));
+//        }
+//      },
+//      reduce: function(keys, values){
+//        return sum(values)/values.length;
+//      }
+    }
+  }
+})
+db.save('_design/snapshots', {
+  views: {
+    all: {
+      map: function (doc) {
+        if (doc.type === 'snapshot') {
+          emit(doc.uuid, doc)
+        }
+      }
+    },
+    sorted: {
+      map: function (doc) {
+        if (doc.type === 'snapshot') {
+          emit(doc.time, doc)
+        }
+      }
     }
   }
 })
@@ -66,6 +112,17 @@ module.exports = {
       }))
     });
   },
+  latestMeasurementsByHour: function(callback){
+    log.info("Querying measurements by endkey");
+    db.view("measurements/byHour", {group:true}, function(err, results){
+      if(err){
+        log.info("Failed to fetch latest measurements by key: " + JSON.stringify(err));
+      }
+      callback(err, _.collect(results, function(r){
+        return r;
+      }))
+    });
+  },
   saveMeasurement: function(report, callback){
     report.type = "measurement";
     db.save(report.uuid, report, callback);
@@ -75,6 +132,17 @@ module.exports = {
     db.save(snapshot.uuid, snapshot, callback);
   },
   getSnapshot: function(uuid, callback){
+    db.get(uuid, callback);
+  },
+  getSnapshots: function(callback){
+    db.view("snapshots/sorted", {}, function(err, results){
+      if(err){
+        log.info("Failed to fetch snapshots: " + JSON.stringify(err));
+      }
+      callback(err, _.collect(results, function(r){
+        return r.value;
+      }))
+    });
     db.get(uuid, callback);
   }
 }
