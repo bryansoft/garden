@@ -14,10 +14,10 @@ define(function(require){
     measurements.subscribe(function(measurements){
       log.info("Updating the data arrays in the main page");
       self.temperatureData(_.collect(measurements, function(m){
-        return [m.time, m.temperature];
+        return [parseFloat(m.time), parseFloat(m.temperature)];
       }))
       self.moistureData(_.collect(measurements, function(m){
-        return [m.time, m.moisture];
+        return [parseFloat(m.time), parseFloat(m.moisture)];
       }))
     })
 
