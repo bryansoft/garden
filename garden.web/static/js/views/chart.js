@@ -14,18 +14,9 @@ define(function(require){
       var createChart = function (data) {
 
         if(data && data.length > 5){
-          data = _.map(_.sortBy(data, function(d){
-            return parseFloat(d.time);
-          }), function (d) {
-            return {
-              x: (parseFloat(d[0])),
-              y: parseFloat(d[1])
-            }
-          });
-
           data = _.sortBy(data, function(d){
-            return d.x;
-          })
+            return parseFloat(d[0]);
+          });
 
           $(element).highcharts({
             chart: {
@@ -36,8 +27,8 @@ define(function(require){
             },
             xAxis: {
               type: 'datetime',
-              max: (_.max(data, function(d){return d.x}).x),
-              min: (_.max(data, function(d){return d.x}).x - 24 * 60 *60 * 1000),
+              max: (_.max(data, function(d){return d[0]})[0]),
+              min: (_.max(data, function(d){return d[0]})[0] - 24 * 60 *60 * 1000),
               minRange:60 * 1000
             },
             yAxis: {
