@@ -67,6 +67,34 @@ db.save('_design/measurements', {
 //      reduce: function(keys, values){
 //        return sum(values)/values.length;
 //      }
+    },
+    temperatureByHour: {
+      // map
+      map: function(doc){
+        emit(Math.floor(parseFloat(doc.time)/(60 * 60 * 1000)) * (60 * 60 * 1000), parseFloat(doc.temperature)) // in place of doc.info.size, you'd put whatever
+        // value you want averaged here
+      },
+      // reduce
+      reduce: function(keys, values, rereduce) {
+        if (!rereduce){
+          var length = values.length
+          return [sum(values) / length, length]
+        }else{
+          var length = sum(values.map(function(v){return v[1]}))
+          var avg = sum(values.map(function(v){
+            return v[0] * (v[1] / length)
+          }))
+          return [avg, length]
+        }
+      }
+//      map: function (doc) {
+//        if (doc.type === 'measurement') {
+//          emit(Math.floor(doc.time/1000), parseFloat(doc.moisture));
+//        }
+//      },
+//      reduce: function(keys, values){
+//        return sum(values)/values.length;
+//      }
     }
   }
 })
@@ -115,6 +143,18 @@ module.exports = {
   latestMeasurementsByHour: function(callback){
     log.info("Querying measurements by endkey");
     db.view("measurements/byHour", {group:true, limit:1000, descending:true}, function(err, results){
+      log.info("Results came back...")
+      if(err){
+        log.info("Failed to fetch latest measurements by key: " + JSON.stringify(err));
+      }
+      callback(err, _.collect(results, function(r){
+        return [r.key, r.value[0]];
+      }))
+    });
+  },
+  latestTemperatureByHour: function(callback){
+    log.info("Querying measurements by endkey");
+    db.view("measurements/temperatureByHour", {group:true, limit:1000, descending:true}, function(err, results){
       log.info("Results came back...")
       if(err){
         log.info("Failed to fetch latest measurements by key: " + JSON.stringify(err));
