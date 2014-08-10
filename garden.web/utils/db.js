@@ -43,22 +43,22 @@ db.save('_design/measurements', {
     byHour: {
       // map
       map: function(doc){
-        emit(Math.round(parseFloat(doc.time)/(60 * 60 * 1000)), parseFloat(doc.moisture)) // in place of doc.info.size, you'd put whatever
+        emit(Math.round(parseFloat(doc.time)/(60 * 60 * 1000)) * (60 * 60 * 1000), parseFloat(doc.moisture)) // in place of doc.info.size, you'd put whatever
         // value you want averaged here
-      }
+      },
       // reduce
-//      reduce: function(keys, values, rereduce) {
-//        if (!rereduce){
-//          var length = values.length
-//          return [sum(values) / length, length]
-//        }else{
-//          var length = sum(values.map(function(v){return v[1]}))
-//          var avg = sum(values.map(function(v){
-//            return v[0] * (v[1] / length)
-//          }))
-//          return [avg, length]
-//        }
-//      }
+      reduce: function(keys, values, rereduce) {
+        if (!rereduce){
+          var length = values.length
+          return [sum(values) / length, length]
+        }else{
+          var length = sum(values.map(function(v){return v[1]}))
+          var avg = sum(values.map(function(v){
+            return v[0] * (v[1] / length)
+          }))
+          return [avg, length]
+        }
+      }
 //      map: function (doc) {
 //        if (doc.type === 'measurement') {
 //          emit(Math.floor(doc.time/1000), parseFloat(doc.moisture));
