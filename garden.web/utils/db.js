@@ -10,7 +10,7 @@ var c = new(cradle.Connection)('http://localhost', 5984, {
 });
 
 var db = c.database('garden');
-db.exists(function (err, exists) { q
+db.exists(function (err, exists) {
   if (err) {
     log.error('error', err);
   } else if (exists) {
@@ -43,7 +43,7 @@ db.save('_design/measurements', {
     byHour: {
       // map
       map: function(doc){
-        emit(Math.round(parseFloat(doc.time)/60 * 1000), parseFloat(doc.moisture)) // in place of doc.info.size, you'd put whatever
+        emit(Math.round(parseFloat(doc.time)/60 * 60 * 1000), parseFloat(doc.moisture)) // in place of doc.info.size, you'd put whatever
         // value you want averaged here
       },
       // reduce
@@ -112,28 +112,17 @@ module.exports = {
       }))
     });
   },
-  incrementHourlyStats: function(reading){
+  latestMeasurementsByHour: function(callback){
     log.info("Querying measurements by endkey");
-    var hour = parseFloat(reading.time/(60 * 60 * 1000));
-    var id = "hourlyMeasurement-" + hour;
-    db.get(id, function(err, result){
-      var stat = result
-      if(result){
-        stat.readingCount = stat.readingCount + 1;
-        stat.moistureTotal += reading.moisture;
-        stat.temperatureTotal += reading.temperature;
-        stat.time = hour;
-        db.save(id, stat);
+    db.view("measurements/byHour", {group:true}, function(err, results){
+      log.info("Results came back...")
+      if(err){
+        log.info("Failed to fetch latest measurements by key: " + JSON.stringify(err));
       }
-      else{
-        db.save(id, {
-          time: hour,
-          readingCount:1,
-          moistureTota: 0,
-          temperatureTotal: 0
-        })
-      }
-    })
+      callback(err, _.collect(results, function(r){
+        return r;
+      }))
+    });
   },
   saveMeasurement: function(report, callback){
     report.type = "measurement";
