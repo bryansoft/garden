@@ -43,7 +43,7 @@ db.save('_design/measurements', {
     byHour: {
       // map
       map: function(doc){
-        emit(doc.time, parseFloat(doc.moisture)) // in place of doc.info.size, you'd put whatever
+        emit(Math.round(parseFloat(doc.time)/(60 * 60 * 1000)), parseFloat(doc.moisture)) // in place of doc.info.size, you'd put whatever
         // value you want averaged here
       }
       // reduce
