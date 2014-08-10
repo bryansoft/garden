@@ -26,6 +26,7 @@ require([
   "utils/Rest",
   "model/Measurements",
   "viewmodel/MainPage",
+  "views/moisture",
   "views/chart"
 ], function(
   ko,
