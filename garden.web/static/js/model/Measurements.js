@@ -6,6 +6,13 @@ define(function(require){
 
     var self = ko.observable([]);
 
+    self.getMoistureByHour = function(callback){
+      rest.get("/rest/measurement/byHour", {
+        success: function(measurements){
+          callback(measurements);
+        }
+      })
+    }
 
     rest.get("/rest/measurement/latest", {
       success: function(measurements){

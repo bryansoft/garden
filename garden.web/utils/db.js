@@ -120,7 +120,7 @@ module.exports = {
         log.info("Failed to fetch latest measurements by key: " + JSON.stringify(err));
       }
       callback(err, _.collect(results, function(r){
-        return r;
+        return [r.key, r.value];
       }))
     });
   },

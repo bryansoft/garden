@@ -11,14 +11,17 @@ define(function(require){
       moistureData : ko.observable()
     }
 
+    measurements.getMoistureByHour(function(moisiture){
+      self.moistureData(moisiture);
+    })
     measurements.subscribe(function(measurements){
       log.info("Updating the data arrays in the main page");
       self.temperatureData(_.collect(measurements, function(m){
         return [parseFloat(m.time), parseFloat(m.temperature)];
       }))
-      self.moistureData(_.collect(measurements, function(m){
-        return [parseFloat(m.time), parseFloat(m.moisture)];
-      }))
+//      self.moistureData(_.collect(measurements, function(m){
+//        return [parseFloat(m.time), parseFloat(m.moisture)];
+//      }))
     })
 
     return self;
