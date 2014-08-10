@@ -13,6 +13,13 @@ define(function(require){
         }
       })
     }
+    self.getTemperatureByHour = function(callback){
+      rest.get("/rest/measurement/temperatureByHour", {
+        success: function(measurements){
+          callback(measurements);
+        }
+      })
+    }
 
     rest.get("/rest/measurement/latest", {
       success: function(measurements){

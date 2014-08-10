@@ -14,6 +14,9 @@ define(function(require){
     measurements.getMoistureByHour(function(moisiture){
       self.moistureData(moisiture);
     })
+    measurements.getTemperatureByHour(function(moisiture){
+      self.temperatureData(moisiture);
+    })
     measurements.subscribe(function(measurements){
       log.info("Updating the data arrays in the main page");
       self.temperatureData(_.collect(measurements, function(m){
